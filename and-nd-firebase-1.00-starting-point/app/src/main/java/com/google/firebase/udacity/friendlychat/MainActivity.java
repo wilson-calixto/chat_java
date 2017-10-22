@@ -131,16 +131,6 @@ public class MainActivity extends AppCompatActivity {
         });
         mMessageEditText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(DEFAULT_MSG_LENGTH_LIMIT)});
 
-        // Send button sends a message and clears the EditText
-        mSendButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // TODO: Send messages on click
-
-                // Clear input box
-                mMessageEditText.setText("");
-            }
-        });
     }
 
 
