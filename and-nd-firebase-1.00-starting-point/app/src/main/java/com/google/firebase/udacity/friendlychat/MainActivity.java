@@ -40,6 +40,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
+import jpsam3hklam9.des.DESInterface;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -56,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
     private Button mSendButton;
 
     private String mUsername;
-
+    private String teste;
 
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mMessagesDatabaseReference;
@@ -99,9 +100,14 @@ public class MainActivity extends AppCompatActivity {
         mSendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // TODO: Enviar mensagens no clique
-                FriendlyMessage afriendlyMessage = new FriendlyMessage(mMessageEditText.getText().toString(), mUsername, null);
+
+
+                DESInterface d = new DESInterface();
+                FriendlyMessage afriendlyMessage = new FriendlyMessage(d.main(mMessageEditText.getText().toString()), mUsername, null);
                 mMessagesDatabaseReference.push().setValue(afriendlyMessage);
+
+
+
 
 
                 // Limpar a input box
