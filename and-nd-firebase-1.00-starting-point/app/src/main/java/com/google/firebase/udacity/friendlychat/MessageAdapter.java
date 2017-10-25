@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 
 import java.util.List;
+import jpsam3hklam9.des.DESInterface;
 
 public class MessageAdapter extends ArrayAdapter<FriendlyMessage> {
     public MessageAdapter(Context context, int resource, List<FriendlyMessage> objects) {
@@ -39,7 +40,13 @@ public class MessageAdapter extends ArrayAdapter<FriendlyMessage> {
         } else {
             messageTextView.setVisibility(View.VISIBLE);
             photoImageView.setVisibility(View.GONE);
-            messageTextView.setText(message.getText());
+
+            DESInterface d = new DESInterface();
+            String descriptografada = d.decript(message.getText());
+
+
+            messageTextView.setText(descriptografada);
+            //messageTextView.setText(descriptografada);
         }
         authorTextView.setText(message.getName());
 

@@ -8,114 +8,75 @@ import java.nio.ByteBuffer;
  */
 public class DESInterface
 {
-    public static String main(String s)
-    {
-
-
-        /*InputStreamReader is = new InputStreamReader(System.in);
-        BufferedReader reader = new BufferedReader(is);
-        System.out.println("Please note: because of the way ByteBuffer makes byte arrays from\n" +
-                "longs, your input will will be rounded down to the nearest 8 bytes. So enter\n" +
-                "an input with a length that is a multiple of 8 bytes to see it all.\n");
-*/
-
-        // get all user input and options
-     //   System.out.println("Path to text file: ");
-
-                    //FAZER O PRGRAMA FUNCIONAR COM STRING E NAO COM ARQUIVO
-
-        byte[] text = s.getBytes();
-
-
-        //byte[] text = getByteArrayFromFile("/home/wilson/review");//getText(reader);
-        //System.out.println("64 bit key (as a string of text): ");
-        long key = getKey("12345678");//getKey(reader);
-        //System.out.println("64 bit initialisation vector (as string of text): ");
-        long IV = getKey("abc");
-//        System.out.println("Do you want CBC mode? [Y/n] (defaults to Y)");
-
-        boolean CBCMode =true;// getCBCConfirmation(reader);
-
-        //System.out.printf("Input plaintext: \n%s", new String(text));
-
-
-        long[] blocks = splitInputIntoBlocks(text);
-
-        //if (CBCMode)
-             return runCBC(blocks, key, IV);
-        //else
-            //runCipher(blocks, key);
-
-    /*    try
-        {
-            reader.close();
-        } catch (IOException e)
-        {
-            printErrorAndDie("Cannot close reader.");
-        }*/
-        //return "que dia foi isso?";
+    public static String main(String s) {
+        return "paçoca";
     }
 
-    /**
-     * Runs DES in CBC mode on input @param blocks using @param key with appropriate output
-     * displayed.
-     */
-    private static String runCBC(long[] blocks, long key, long IV)
-    {
-        DES des = new DES();
-        byte[] bytes;
-        String acm_str=new String();
-        long[] cipherTexts, plainTexts;
-
-        cipherTexts = des.CBCEncrypt(blocks, key, IV);
-
-        System.out.println("\nEncrypted ciphertext: ");
-        for (long block : cipherTexts)
+     public static String encripht(String s)
         {
 
-            bytes = ByteBuffer.allocate(8).putLong(block).array();
-            acm_str=acm_str+bytes.toString();
-            System.out.print(new String(bytes));
-        }
+        byte[] text = s.getBytes();
+        long key = getKey("12345678");//getKey(reader);
+        long IV = getKey("12");
+        long[] blocks = splitInputIntoBlocks(text);
+        return runCipher(blocks, key);
+    }
 
-        plainTexts = des.CBCDecrypt(cipherTexts, key, IV);
+    public static String decripht(String s)
+    {
+
+        byte[] text = s.getBytes();
+        long key = getKey("12345678");//getKey(reader);
+        long IV = getKey("12");
+        long[] blocks = splitInputIntoBlocks(text);
+        return runDecipher(blocks, key);
+    }
+
+    private static String runDecipher(long[] cipherTexts, long key)
+    {
+        String acm_str = new String();
+        DES des = new DES();
+        byte[] bytes;
+        long[] plainTexts = new long[cipherTexts.length];
+
         System.out.println("\nDecrypted plaintext: ");
+        for (int i = 0; i < cipherTexts.length; i++)
+        {
+            plainTexts[i] = des.decrypt(cipherTexts[i], key);
+        }
         for (long block : plainTexts)
         {
             bytes = ByteBuffer.allocate(8).putLong(block).array();
-            System.out.print(new String(bytes));
+            String a = new String(bytes);
+            acm_str=acm_str+a;
         }
-        return acm_str;
 
-    }
-
-    /**
-     * Runs standard DES mode encryption and decryption on @param blocks using @param key with
-     * appropriate output displayed.
-     */
-    private static void runCipher(long[] blocks, long key)
-    {
+        /*
+        String acm_str = new String();
         DES des = new DES();
         byte[] bytes;
-        long[] cipherTexts = new long[blocks.length], plainTexts = new long[blocks.length];
+        long[] cipherTexts = new long[blocks.length],plainTexts = new long[blocks.length];
 
         System.out.println("Input plaintext: ");
         for (long block : blocks)
         {
             bytes = ByteBuffer.allocate(8).putLong(block).array();
             System.out.print(new String(bytes));
+
         }
 
         System.out.println("\nEncrypted ciphertext: ");
         for (int i = 0; i < blocks.length; i++)
         {
             cipherTexts[i] = des.encrypt(blocks[i], key);
+
         }
 
         for (long block : cipherTexts)
         {
             bytes = ByteBuffer.allocate(8).putLong(block).array();
             System.out.print(new String(bytes));
+
         }
 
         System.out.println("\nDecrypted plaintext: ");
@@ -126,9 +87,143 @@ public class DESInterface
         for (long block : plainTexts)
         {
             bytes = ByteBuffer.allocate(8).putLong(block).array();
-            System.out.print(new String(bytes));
+            String a = new String(bytes);
+            acm_str=acm_str+a;
         }
+*/
+        return acm_str;
     }
+
+
+    private static String runCipher(long[] blocks, long key)
+    {
+        String acm_str = new String();
+        DES des = new DES();
+        byte[] bytes;
+        long[] cipherTexts = new long[blocks.length];
+
+        System.out.println("Input plaintext: ");
+        for (long block : blocks)
+        {
+            bytes = ByteBuffer.allocate(8).putLong(block).array();
+            System.out.print(new String(bytes));
+
+        }
+
+        System.out.println("\nEncrypted ciphertext: ");
+        for (int i = 0; i < blocks.length; i++)
+        {
+            cipherTexts[i] = des.encrypt(blocks[i], key);
+
+        }
+
+        for (long block : cipherTexts)
+        {
+            bytes = ByteBuffer.allocate(8).putLong(block).array();
+            System.out.print(new String(bytes));
+            String a = new String(bytes);
+            acm_str=acm_str+a;
+
+        }
+/*
+        System.out.println("\nDecrypted plaintext: ");
+        for (int i = 0; i < cipherTexts.length; i++)
+        {
+            plainTexts[i] = des.decrypt(cipherTexts[i], key);
+        }
+        for (long block : plainTexts)
+        {
+            bytes = ByteBuffer.allocate(8).putLong(block).array();
+            String a = new String(bytes);
+            acm_str=acm_str+a;
+        }*/
+        return acm_str;
+    }
+
+
+
+    /**
+     * Runs DES in CBC mode on input @param blocks using @param key with appropriate output
+     * displayed.
+     */
+    private static String runCBC(long[] blocks, long key, long IV)
+    {
+        DES des = new DES();
+        byte[] bytes;
+        byte[] total=new byte[0];
+
+        String acm_str=new String("string ");
+        long[] cipherTexts, plainTexts;
+
+        acm_str=acm_str+"   texto cifrado ";
+        cipherTexts = des.CBCEncrypt(blocks, key, IV);
+
+        int c=0;
+
+        for (long block : cipherTexts)
+        {
+
+                bytes = ByteBuffer.allocate(8).putLong(block).array();
+                if(c==1){
+                    total=bytes;
+
+                }
+                c=0;
+
+                acm_str=acm_str+bytes.toString();
+
+        }
+        acm_str=acm_str+"   texto decifrado ";
+
+        plainTexts = des.CBCDecrypt(cipherTexts, key, IV);
+
+        String a= new String();
+        for (long block : plainTexts)
+        {
+            bytes = ByteBuffer.allocate(8).putLong(block).array();
+            acm_str=acm_str+bytes.toString();
+        }
+
+
+
+
+        return total.toString();
+
+    }
+    public static String decript(String s)
+    {
+        byte[] text = s.getBytes();
+        long key = getKey("12345678");//getKey(reader);
+        long IV = getKey("12345678");
+        long[] blocks = splitInputIntoBlocks(text);
+
+        return  runDecipher(blocks, key);
+    }
+
+    private static String decript(long[] cipherTexts, long key, long IV)
+    {
+        DES des = new DES();
+        byte[] bytes;
+        String acm_str=new String();
+        long[]  plainTexts;
+
+
+        plainTexts = des.CBCDecrypt(cipherTexts, key, IV);
+
+        for (long block : plainTexts)
+        {
+            bytes = ByteBuffer.allocate(8).putLong(block).array();
+            acm_str=acm_str+bytes.toString();
+
+        }
+        return acm_str;
+
+    }
+
+    /**
+     * Runs standard DES mode encryption and decryption on @param blocks using @param key with
+     * appropriate output displayed.
+     */
 
     /**
      * Splits the input bytes into blocks of 64 bits.

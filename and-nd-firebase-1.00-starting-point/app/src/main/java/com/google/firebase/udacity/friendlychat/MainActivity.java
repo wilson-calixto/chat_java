@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String ANONYMOUS = "anonymous";
     public static final int DEFAULT_MSG_LENGTH_LIMIT = 1000;
 
+
     private ListView mMessageListView;
     private MessageAdapter mMessageAdapter;
     private ProgressBar mProgressBar;
@@ -103,8 +104,8 @@ public class MainActivity extends AppCompatActivity {
 
 
                 DESInterface d = new DESInterface();
-                FriendlyMessage afriendlyMessage = new FriendlyMessage(d.main(mMessageEditText.getText().toString()), mUsername, null);
-                mMessagesDatabaseReference.push().setValue(afriendlyMessage);
+                FriendlyMessage friendlyMessage = new FriendlyMessage(d.encripht(mMessageEditText.getText().toString()), mUsername, null);
+                mMessagesDatabaseReference.push().setValue(friendlyMessage);
 
 
 
@@ -136,6 +137,39 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         mMessageEditText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(DEFAULT_MSG_LENGTH_LIMIT)});
+
+
+        mChildEventListener = new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+
+                    FriendlyMessage friendlyMessage = dataSnapshot.getValue(FriendlyMessage.class);
+
+                    mMessageAdapter.add(friendlyMessage);
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+        mMessagesDatabaseReference.addChildEventListener(mChildEventListener);
+
 
     }
 
