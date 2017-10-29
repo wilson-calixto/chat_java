@@ -2,143 +2,253 @@ package jpsam3hklam9.des;
 
 import java.io.*;
 import java.nio.ByteBuffer;
+import java.util.*;
 
 /**
  * Class to provide a simple user interface to the DES algorithm.
  */
-public class DESInterface
-{
+public class DESInterface {
     public static String main(String s) {
         return "paçoca";
     }
 
-     public static String encripht(String s)
-        {
+    public static String encripht(String s) {
 
         byte[] text = s.getBytes();
-        long key = getKey("12345678");//getKey(reader);
-        long IV = getKey("12");
+        long key = getKey("12345678");
+
         long[] blocks = splitInputIntoBlocks(text);
-        return runCipher(blocks, key);
+        return runDecipher(blocks, key, 1);
+
     }
 
-    public static String decripht(String s)
-    {
-
+    public static String decript(String s) {
         byte[] text = s.getBytes();
         long key = getKey("12345678");//getKey(reader);
-        long IV = getKey("12");
+        long IV = getKey("12345678");
         long[] blocks = splitInputIntoBlocks(text);
-        return runDecipher(blocks, key);
+
+        return runDecipher(blocks, key, 0);
     }
 
-    private static String runDecipher(long[] cipherTexts, long key)
-    {
+    public static String decripht(String s) {
+        byte[] text = s.getBytes();
+        long key = getKey("12345678");
+
+        long[] blocks = splitInputIntoBlocks(text);
+        return runDecipher(blocks, key, 0);// coverte pra byte e pra string;
+    }
+
+    public static String decripht2(String s) {
+        byte[] text = s.getBytes();
+        long key = getKey("12345678");
+
+        long[] blocks = splitInputIntoBlocks(text);
+
+        String c = runCipher3(blocks, key, 1);// coverte pra byte e pra string;
+
+        text = c.getBytes();
+        key = getKey("12345678");
+
+        blocks = splitInputIntoBlocks(text);
+
+
+
+        return runCipher3(blocks, key, 0);// coverte pra byte e pra string;
+    }
+
+    private static String runCipher3(long[] blocks, long key,int mode ) {
+        ArrayList<String> mensagem = new ArrayList<String>();
         String acm_str = new String();
+
         DES des = new DES();
         byte[] bytes;
-        long[] plainTexts = new long[cipherTexts.length];
+        long[] cipherTexts = new long[blocks.length], plainTexts = new long[blocks.length];
 
-        System.out.println("\nDecrypted plaintext: ");
-        for (int i = 0; i < cipherTexts.length; i++)
-        {
-            plainTexts[i] = des.decrypt(cipherTexts[i], key);
-        }
-        for (long block : plainTexts)
-        {
-            bytes = ByteBuffer.allocate(8).putLong(block).array();
-            String a = new String(bytes);
-            acm_str=acm_str+a;
-        }
+        if(mode==1){
 
-        /*
+            System.out.println("Input plaintext: ");
+            for (long block : blocks) {
+                bytes = ByteBuffer.allocate(8).putLong(block).array();
+                System.out.print(new String(bytes));
+            }
+
+            System.out.println("\nEncrypted ciphertext: ");
+            for (int i = 0; i < blocks.length; i++) {
+                cipherTexts[i] = des.encrypt(blocks[i], key);
+            }
+
+
+            for (long block : cipherTexts)
+            {
+                bytes = ByteBuffer.allocate(8).putLong(block).array();
+                String a = new String(bytes);
+                mensagem.add(a);
+
+            }
+
+            for(int i = 0; i<mensagem.size(); i++){
+                acm_str += mensagem.get(i);
+            }
+            return acm_str;
+
+
+        }
+        else {
+
+            cipherTexts=blocks;
+            System.out.println("\nDecrypted plaintext: ");
+            for (int i = 0; i < cipherTexts.length; i++) {
+                plainTexts[i] = des.decrypt(cipherTexts[i], key);
+            }
+            for (long block : plainTexts) {
+                bytes = ByteBuffer.allocate(8).putLong(block).array();
+                String a = new String(bytes);
+
+
+                mensagem.add(a);
+
+            }
+
+            for (int i = 0; i < mensagem.size(); i++) {
+                acm_str += mensagem.get(i);
+            }
+
+
+            acm_str = acm_str.replace("\\u0000\\", "");
+
+            acm_str = acm_str.replace("\\u0000", "");
+            acm_str = acm_str.replace("u0000", "");
+            acm_str = acm_str.replace("u0000\\", "");
+            acm_str = acm_str.replace("\\", "");
+
+            return acm_str;
+        }
+    }
+
+
+
+
+    private static String runDecipher(long[] blocks, long key, int mode)
+
+    {
+        ArrayList<String> mensagem = new ArrayList<String>();
         String acm_str = new String();
         DES des = new DES();
         byte[] bytes;
         long[] cipherTexts = new long[blocks.length],plainTexts = new long[blocks.length];
 
-        System.out.println("Input plaintext: ");
-        for (long block : blocks)
-        {
-            bytes = ByteBuffer.allocate(8).putLong(block).array();
-            System.out.print(new String(bytes));
+        if(mode==1){
+            System.out.println("Input plaintext: ");
+            for (long block : blocks)
+            {
+                bytes = ByteBuffer.allocate(8).putLong(block).array();
+                System.out.print(new String(bytes));
+            }
+
+            System.out.println("\nEncrypted ciphertext: ");
+            for (int i = 0; i < blocks.length; i++)
+            {
+                cipherTexts[i] = des.encrypt(blocks[i], key);
+
+            }
+
+            for (long block : cipherTexts)
+            {
+                bytes = ByteBuffer.allocate(8).putLong(block).array();
+                String a = new String(bytes);
+                mensagem.add(a);
+
+            }
+
+            for(int i = 0; i<mensagem.size(); i++){
+                acm_str += mensagem.get(i);
+            }
+            return acm_str;
+
 
         }
+        else {
 
-        System.out.println("\nEncrypted ciphertext: ");
-        for (int i = 0; i < blocks.length; i++)
-        {
-            cipherTexts[i] = des.encrypt(blocks[i], key);
-
+            cipherTexts = blocks;
+            System.out.println("\nDecrypted plaintext: ");
+            for (int i = 0; i < cipherTexts.length; i++) {
+                plainTexts[i] = des.decrypt(cipherTexts[i], key);
+            }
+            for (long block : plainTexts) {
+                bytes = ByteBuffer.allocate(8).putLong(block).array();
+                String a = new String(bytes);
+                mensagem.add(a);
+                //acm_str = acm_str + a;
+            }
+            for(int i = 0; i<mensagem.size(); i++){
+                acm_str += mensagem.get(i);
+            }
+            return acm_str;
         }
 
-        for (long block : cipherTexts)
-        {
-            bytes = ByteBuffer.allocate(8).putLong(block).array();
-            System.out.print(new String(bytes));
-
-        }
-
-        System.out.println("\nDecrypted plaintext: ");
-        for (int i = 0; i < cipherTexts.length; i++)
-        {
-            plainTexts[i] = des.decrypt(cipherTexts[i], key);
-        }
-        for (long block : plainTexts)
-        {
-            bytes = ByteBuffer.allocate(8).putLong(block).array();
-            String a = new String(bytes);
-            acm_str=acm_str+a;
-        }
-*/
-        return acm_str;
     }
+    private static String runDecipher2(long[] blocks, long key, int mode)
 
-
-    private static String runCipher(long[] blocks, long key)
     {
+        ArrayList<String> mensagem = new ArrayList<String>();
         String acm_str = new String();
         DES des = new DES();
         byte[] bytes;
-        long[] cipherTexts = new long[blocks.length];
+        long[] cipherTexts = new long[blocks.length],plainTexts = new long[blocks.length];
 
-        System.out.println("Input plaintext: ");
-        for (long block : blocks)
-        {
-            bytes = ByteBuffer.allocate(8).putLong(block).array();
-            System.out.print(new String(bytes));
 
-        }
+            System.out.println("Input plaintext: ");
+            for (long block : blocks)
+            {
+                bytes = ByteBuffer.allocate(8).putLong(block).array();
+                System.out.print(new String(bytes));
+            }
 
-        System.out.println("\nEncrypted ciphertext: ");
-        for (int i = 0; i < blocks.length; i++)
-        {
-            cipherTexts[i] = des.encrypt(blocks[i], key);
+            System.out.println("\nEncrypted ciphertext: ");
+            for (int i = 0; i < blocks.length; i++)
+            {
+                cipherTexts[i] = des.encrypt(blocks[i], key);
 
-        }
+            }
 
-        for (long block : cipherTexts)
-        {
-            bytes = ByteBuffer.allocate(8).putLong(block).array();
-            System.out.print(new String(bytes));
-            String a = new String(bytes);
-            acm_str=acm_str+a;
+            for (long block : cipherTexts)
+            {
+                bytes = ByteBuffer.allocate(8).putLong(block).array();
+                String a = new String(bytes);
+                mensagem.add(a);
 
-        }
-/*
-        System.out.println("\nDecrypted plaintext: ");
-        for (int i = 0; i < cipherTexts.length; i++)
-        {
-            plainTexts[i] = des.decrypt(cipherTexts[i], key);
-        }
-        for (long block : plainTexts)
-        {
-            bytes = ByteBuffer.allocate(8).putLong(block).array();
-            String a = new String(bytes);
-            acm_str=acm_str+a;
-        }*/
-        return acm_str;
+            }
+
+            for(int i = 0; i<mensagem.size(); i++){
+                acm_str += mensagem.get(i);
+            }
+
+
+//            byte[] text = acm_str.getBytes();
+
+//            cipherTexts = splitInputIntoBlocks(text);
+
+
+            System.out.println("\nDecrypted plaintext: ");
+            for (int i = 0; i < cipherTexts.length; i++) {
+                plainTexts[i] = des.decrypt(cipherTexts[i], key);
+            }
+            for (long block : plainTexts) {
+                bytes = ByteBuffer.allocate(8).putLong(block).array();
+                String a = new String(bytes);
+                mensagem.add(a);
+                //acm_str = acm_str + a;
+            }
+            for(int i = 0; i<mensagem.size(); i++){
+                acm_str += mensagem.get(i);
+            }
+            return acm_str;
+
+
     }
+
+
 
 
 
@@ -190,15 +300,7 @@ public class DESInterface
         return total.toString();
 
     }
-    public static String decript(String s)
-    {
-        byte[] text = s.getBytes();
-        long key = getKey("12345678");//getKey(reader);
-        long IV = getKey("12345678");
-        long[] blocks = splitInputIntoBlocks(text);
 
-        return  runDecipher(blocks, key);
-    }
 
     private static String decript(long[] cipherTexts, long key, long IV)
     {
@@ -371,4 +473,41 @@ public class DESInterface
         System.err.println("Fatal IO error encountered." + "\n" + message);
         System.exit(1);
     }
+    private static void runCipher(long[] blocks, long key)
+    {
+        DES des = new DES();
+        byte[] bytes;
+        long[] cipherTexts = new long[blocks.length], plainTexts = new long[blocks.length];
+
+        System.out.println("Input plaintext: ");
+        for (long block : blocks)
+        {
+            bytes = ByteBuffer.allocate(8).putLong(block).array();
+            System.out.print(new String(bytes));
+        }
+
+        System.out.println("\nEncrypted ciphertext: ");
+        for (int i = 0; i < blocks.length; i++)
+        {
+            cipherTexts[i] = des.encrypt(blocks[i], key);
+        }
+
+        for (long block : cipherTexts)
+        {
+            bytes = ByteBuffer.allocate(8).putLong(block).array();
+            System.out.print(new String(bytes));
+        }
+
+        System.out.println("\nDecrypted plaintext: ");
+        for (int i = 0; i < cipherTexts.length; i++)
+        {
+            plainTexts[i] = des.decrypt(cipherTexts[i], key);
+        }
+        for (long block : plainTexts)
+        {
+            bytes = ByteBuffer.allocate(8).putLong(block).array();
+            System.out.print(new String(bytes));
+        }
+    }
+
 }

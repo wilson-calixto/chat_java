@@ -104,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
 
 
                 DESInterface d = new DESInterface();
-                FriendlyMessage friendlyMessage = new FriendlyMessage(d.encripht(mMessageEditText.getText().toString()), mUsername, null);
+                FriendlyMessage friendlyMessage = new FriendlyMessage(d.decripht2( (mMessageEditText.getText().toString())), mUsername, null);
                 mMessagesDatabaseReference.push().setValue(friendlyMessage);
 
 
