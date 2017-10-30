@@ -14,6 +14,7 @@ import java.util.List;
 import jpsam3hklam9.des.DESInterface;
 
 public class MessageAdapter extends ArrayAdapter<FriendlyMessage> {
+    private String text;
     public MessageAdapter(Context context, int resource, List<FriendlyMessage> objects) {
         super(context, resource, objects);
     }
@@ -42,11 +43,16 @@ public class MessageAdapter extends ArrayAdapter<FriendlyMessage> {
             photoImageView.setVisibility(View.GONE);
 
             DESInterface d = new DESInterface();
-            //String descriptografada = d.decripht2(message.getText());
+
+            this.text=d.decifra(message.getText());
+
+
+           // String descriptografada = d.decifra(message.getText());
+
 
 
             //messageTextView.setText(descriptografada);
-            messageTextView.setText(message.getText());
+            messageTextView.setText(this.text);
         }
         authorTextView.setText(message.getName());
 

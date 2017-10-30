@@ -12,29 +12,50 @@ public class DESInterface {
         return "paçoca";
     }
 
-    public static String decripht(String s) {
+    public static String decifra(String s) {
 
         byte[] text = s.getBytes();
-        long key = getKey("12345678");
         long[] blocks = splitInputIntoBlocks(text);
+        long key = getKey("12345678");
+
+        String[] arrayDeStrings = s.split(",");
+
+        List<String> arrayListDeStrings = new ArrayList<String>();
 
 
 
-        return dec(blocks, key, 0);// coverte pra byte e pra string;
+        long longConvertido;
+        long[] arrayDeLongs = new long[blocks.length];
+
+        for(int i = 0; i<arrayDeStrings.length; i++){
+            longConvertido = Long.parseLong(arrayDeStrings[i]);
+
+            arrayDeLongs[i]=longConvertido;
+        }
+
+        return dec(arrayDeLongs, key,0);
+
     }
-    public static String decripht2(String s) {
+
+    public static String cifrar(String s) {
 
         byte[] text = s.getBytes();
         long key = getKey("12345678");
         long[] blocks = splitInputIntoBlocks(text);
 
-        return cifra(blocks, key, 0);// coverte pra byte e pra string;
+
+        return cifra(blocks, key, 0);// RETORNA a string cifrada;
+
+        /*String a= cifra(blocks, key, 0);// coverte pra byte e pra string;
+        long w = Long.parseLong(a);
+
+        return dec(cipherTexts, key,0);*/
     }
 
 
     private static String cifra(long[] blocks, long key, int mode) {
         ArrayList<String> mensagem = new ArrayList<String>();
-        String acm_str = new String("");
+        String acm_str = new String(""),acm_str2 = new String("");;
 
         DES des = new DES();
         byte[] bytes;
@@ -50,38 +71,24 @@ public class DESInterface {
 
             for (int i = 0; i < blocks.length; i++) {
                 cipherTexts[i] = des.encrypt(blocks[i], key);
-                acm_str+=cipherTexts[i]+"/";
+                acm_str+=cipherTexts[i]+",";
+
+
+                acm_str2+=cipherTexts[i];
+                mensagem.add(acm_str2);
+                acm_str2="";
             }
 
             for (long block : cipherTexts)
             {
                 bytes = ByteBuffer.allocate(8).putLong(block).array();
-
-
             }
 
-            //String  stringCipherTexts = cipherTexts.toString();
 
 
-            // array long to string enviar
-            // string to long
-
-
-/*
-        byte[] text = acm_str.getBytes();
-
-        long key2 = getKey("12345678");
-        long[] blocks2 = splitInputIntoBlocks(text);
-
-        for(int i = 1; i<mensagem.size()+1; i++){
-            acm_str += mensagem.get(i-1);
-        }
-*/
         return acm_str;
 
 
-
-       // return dec(cipherTexts, key,0);
     }
 
     private static String dec(long[] cipherTexts, long key,int mode ) {
@@ -112,7 +119,7 @@ public class DESInterface {
 
 
 
-    private static String runDecipher2(long[] blocks, long key, int mode)
+    private static String cripEDecrip(long[] blocks, long key, int mode)
 
     {
         ArrayList<String> mensagem = new ArrayList<String>();
@@ -148,25 +155,24 @@ public class DESInterface {
                 acm_str += mensagem.get(i);
             }
 
-
-//            byte[] text = acm_str.getBytes();
-
-//            cipherTexts = splitInputIntoBlocks(text);
-
-
             System.out.println("\nDecrypted plaintext: ");
             for (int i = 0; i < cipherTexts.length; i++) {
                 plainTexts[i] = des.decrypt(cipherTexts[i], key);
+
+
+
+                acm_str+=plainTexts[i];
             }
             for (long block : plainTexts) {
                 bytes = ByteBuffer.allocate(8).putLong(block).array();
                 String a = new String(bytes);
-                mensagem.add(a);
-                //acm_str = acm_str + a;
+
             }
+
             for(int i = 0; i<mensagem.size(); i++){
                 acm_str += mensagem.get(i);
             }
+
             return acm_str;
 
 
@@ -503,3 +509,36 @@ public class DESInterface {
     }
 
 }
+
+
+/*
+        byte[] text = acm_str.getBytes();
+
+        long key2 = getKey("12345678");
+        long[] blocks2 = splitInputIntoBlocks(text);
+
+        for(int i = 1; i<mensagem.size()+1; i++){
+            acm_str += mensagem.get(i-1);
+        }
+
+        //deu errado
+        //transforma a string recebida em um array de strings
+
+        String[] array = acm_str.split(".");
+        List<String> arrayL = new ArrayList<String>(Arrays.asList(s.split(",")));
+        long longConvertido;
+        long[] arrayDeLongs = new long[blocks.length];
+
+        //array de strings em um array de long
+        for(int i = 0; i<array.length; i++){
+            longConvertido = Long.parseLong(array[i]);
+            arrayDeLongs[i]=longConvertido;
+        }
+
+
+
+*/
+//return acm_str;
+
+//deu certo mas localmente
+//List<String> arrayL = new ArrayList<String>(Arrays.asList(acm_str.split(".")));
