@@ -44,7 +44,7 @@ public class MessageAdapter extends ArrayAdapter<FriendlyMessage> {
 
             DESInterface d = new DESInterface();
 
-            this.text=d.decifra(message.getText());
+            this.text=d.decifrar3DES(message.getText());
 
 
            // String descriptografada = d.decifra(message.getText());
