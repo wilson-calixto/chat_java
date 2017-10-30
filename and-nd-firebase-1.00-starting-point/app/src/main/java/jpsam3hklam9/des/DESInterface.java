@@ -20,10 +20,6 @@ public class DESInterface {
 
         String[] arrayDeStrings = s.split(",");
 
-        List<String> arrayListDeStrings = new ArrayList<String>();
-
-
-
         long longConvertido;
         long[] arrayDeLongs = new long[blocks.length];
 
@@ -45,56 +41,26 @@ public class DESInterface {
 
 
         return cifra(blocks, key, 0);// RETORNA a string cifrada;
-
-        /*String a= cifra(blocks, key, 0);// coverte pra byte e pra string;
-        long w = Long.parseLong(a);
-
-        return dec(cipherTexts, key,0);*/
     }
 
 
     private static String cifra(long[] blocks, long key, int mode) {
-        ArrayList<String> mensagem = new ArrayList<String>();
-        String acm_str = new String(""),acm_str2 = new String("");;
-
+        String acm_str = new String("");
         DES des = new DES();
-        byte[] bytes;
         long[] cipherTexts = new long[blocks.length], plainTexts = new long[blocks.length];
-
-            System.out.println("Input plaintext: ");
-            for (long block : blocks) {
-                bytes = ByteBuffer.allocate(8).putLong(block).array();
-                System.out.print(new String(bytes));
-            }
-
-            System.out.println("\nEncrypted ciphertext: ");
 
             for (int i = 0; i < blocks.length; i++) {
                 cipherTexts[i] = des.encrypt(blocks[i], key);
                 acm_str+=cipherTexts[i]+",";
-
-
-                acm_str2+=cipherTexts[i];
-                mensagem.add(acm_str2);
-                acm_str2="";
             }
-
-            for (long block : cipherTexts)
-            {
-                bytes = ByteBuffer.allocate(8).putLong(block).array();
-            }
-
-
 
         return acm_str;
-
-
     }
 
     private static String dec(long[] cipherTexts, long key,int mode ) {
         ArrayList<String> mensagem = new ArrayList<String>();
-        String acm_str = new String();
 
+        String acm_str = new String("");
         DES des = new DES();
         byte[] bytes;
         long[] plainTexts = new long[cipherTexts.length];
@@ -103,16 +69,18 @@ public class DESInterface {
         System.out.println("\nDecrypted plaintext: ");
         for (int i = 0; i < cipherTexts.length; i++) {
             plainTexts[i] = des.decrypt(cipherTexts[i], key);
-        }
-        for (long block : plainTexts) {
-            bytes = ByteBuffer.allocate(8).putLong(block).array();
-            String a = new String(bytes);
-            mensagem.add(a);
+
         }
 
-        for (int i = 0; i < mensagem.size(); i++) {
-            acm_str += mensagem.get(i);
-        }
+        for (long block : plainTexts) {
+            bytes = ByteBuffer.allocate(8).putLong(block).array();
+            String pedaco = new String(bytes);
+            acm_str +=pedaco;
+       }
+
+        acm_str=acm_str.replaceAll("[^a-zA-Z0-9]+","");
+        acm_str=acm_str.replaceAll("[J]+","");
+
         return acm_str;
     }
 
