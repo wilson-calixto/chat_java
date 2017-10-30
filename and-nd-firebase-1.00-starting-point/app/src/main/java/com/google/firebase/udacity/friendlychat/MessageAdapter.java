@@ -42,11 +42,11 @@ public class MessageAdapter extends ArrayAdapter<FriendlyMessage> {
             photoImageView.setVisibility(View.GONE);
 
             DESInterface d = new DESInterface();
-            String descriptografada = d.decripht2(message.getText());
+            //String descriptografada = d.decripht2(message.getText());
 
 
-            messageTextView.setText(descriptografada);
-            //messageTextView.setText(message.getText());
+            //messageTextView.setText(descriptografada);
+            messageTextView.setText(message.getText());
         }
         authorTextView.setText(message.getName());
 
