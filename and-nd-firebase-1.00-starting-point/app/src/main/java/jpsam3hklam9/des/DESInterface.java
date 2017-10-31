@@ -4,12 +4,53 @@ import java.io.*;
 import java.nio.ByteBuffer;
 import java.util.*;
 
-/**
- * Class to provide a simple user interface to the DES algorithm.
- */
+
 public class DESInterface {
+    //oque eu devo implementar é:
     public static String main(String s) {
-        return "paçoca";
+        //cnxxbkvj
+        //cnxxbkvj
+        //cnxxbkvj
+        return "";
+    }
+    private static String cifra3DES(long[] blocks, long key1, long key2, long key3, int a) {
+        String acm_str = new String("");
+        DES des = new DES();
+        long[] cipherTexts = new long[blocks.length], plainTexts = new long[blocks.length];
+
+        for (int i = 0; i < blocks.length; i++) {
+            cipherTexts[i] = des.encrypt(blocks[i], key1);
+            acm_str+=cipherTexts[i]+",";
+        }
+
+        return acm_str;
+    }
+    private static String decifra3DES(long[] original, long key1, long key2, long key3, int a) {
+        ArrayList<String> mensagem = new ArrayList<String>();
+
+        String acm_str = new String("");
+        DES des = new DES();
+        byte[] bytes;
+        long[] plainTexts = new long[original.length];
+
+
+        System.out.println("\nDecrypted plaintext: ");
+        for (int i = 0; i < original.length; i++) {
+            plainTexts[i] = des.decrypt(original[i], key1);
+
+        }
+
+        for (long block : plainTexts) {
+            bytes = ByteBuffer.allocate(8).putLong(block).array();
+            String pedaco = new String(bytes);
+            acm_str +=pedaco;
+        }
+        //acm_str=acm_str.replaceAll("\\W+|\\S+","");
+        acm_str=acm_str.replaceAll("[^a-zA-Z0-9]","");
+        acm_str=acm_str.replaceAll("[J]+","");
+
+        return acm_str;
+
     }
 
 
@@ -44,6 +85,7 @@ public class DESInterface {
     }
 
 
+
     public static String cifrar3DES(String s) {
 
         byte[] text = s.getBytes();
@@ -53,7 +95,7 @@ public class DESInterface {
         long[] blocks = splitInputIntoBlocks(text);
 
 
-        return cifra3DES(blocks, key1,key2, key3);// RETORNA a string cifrada;
+        return cifra3DES(blocks, key1,key2, key3,1);// RETORNA a string cifrada;
     }
 
 
@@ -76,20 +118,11 @@ public class DESInterface {
             arrayDeLongs[i]=longConvertido;
         }
 
-        return decifra3DES(arrayDeLongs, key1,key2, key3);// RETORNA a string cifrada;
+        return decifra3DES(arrayDeLongs, key1,key2, key3,1);// RETORNA a string decifrada;
 
 
 
     }
-
-
-
-
-
-
-
-
-
 
     private static String cifraDES(long[] blocks, long key, int mode) {
         String acm_str = new String("");
@@ -125,7 +158,7 @@ public class DESInterface {
             acm_str +=pedaco;
         }
 
-        acm_str=acm_str.replaceAll("[^a-zA-Z0-9]+","");
+        acm_str=acm_str.replaceAll("[^a-zA-Z0-9s]+","");
         acm_str=acm_str.replaceAll("[J]+","");
 
         return acm_str;
@@ -134,7 +167,8 @@ public class DESInterface {
 
 
 
-    private static String cifra3DES(long[] blocks, long key1, long key2, long key3) {
+
+    private static String cifra3DES(long[] blocks, long key1, long key2, long key3,Integer a) {
         ArrayList<String> mensagem = new ArrayList<String>();
         String acm_str = new String("");
 
@@ -154,14 +188,15 @@ public class DESInterface {
 
         //cifra
         for (int i = 0; i < blocks.length; i++) {
-            cipherTexts2[i] = des.encrypt(plainTexts[i], key3);
-            acm_str+=cipherTexts2[i]+",";
+            acm_str+=cipherTexts[i]+",";
         }
 
         return acm_str;
     }
 
-    private static String decifra3DES(long[] original, long key1, long key2, long key3) {
+
+
+        private static String decifra3DES(long[] original, long key1, long key2, long key3, Integer a) {
         ArrayList<String> mensagem = new ArrayList<String>();
 
         String acm_str = new String("");
@@ -177,11 +212,15 @@ public class DESInterface {
             blocks[i] = des.decrypt(original[i], key1);
 
         }
+
         //cifra
+
+
         for (int i = 0; i < blocks.length; i++)
         {
             cipherTexts[i] = des.encrypt(blocks[i], key2);
         }
+
         //decifrar
 
         for (int i = 0; i < cipherTexts.length; i++) {
@@ -195,8 +234,8 @@ public class DESInterface {
             acm_str +=pedaco;
         }
 
-        acm_str=acm_str.replaceAll("[^a-zA-Z0-9]+","");
-        acm_str=acm_str.replaceAll("[J]+","");
+//        acm_str=acm_str.replaceAll("[^a-zA-Z0-9]+","");
+  //      acm_str=acm_str.replaceAll("[J]+","");
 
         return acm_str;
 
@@ -272,6 +311,8 @@ public class DESInterface {
 
         return key64;
     }
+
+
 
 
 }
