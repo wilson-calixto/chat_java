@@ -15,12 +15,15 @@ import jpsam3hklam9.des.DESInterface;
 
 public class MessageAdapter extends ArrayAdapter<FriendlyMessage> {
     private String text;
+    private String chave_atual;
     public MessageAdapter(Context context, int resource, List<FriendlyMessage> objects) {
+
         super(context, resource, objects);
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+        this.chave_atual=new String("jf92j2ei,ad892dus,sidhd823");
         if (convertView == null) {
             convertView = ((Activity) getContext()).getLayoutInflater().inflate(R.layout.item_message, parent, false);
         }
@@ -44,15 +47,22 @@ public class MessageAdapter extends ArrayAdapter<FriendlyMessage> {
 
             DESInterface d = new DESInterface();
 
-            this.text=d.decifrar3DES(message.getText());
+            this.text=d.decifrar3DES(message.getText(),chave_atual);
+            String resposta;
 
+            if (this.text.length()==24){
+                //atualizo a chave
+                this.chave_atual=this.text;
+                resposta="A nova chave chegou";
+            }else{
+                //mostra o texto que chegou
+                resposta=" mensagem: "+this.text;
+                //a chave volta a ser a padrao
+                this.chave_atual="jf92j2ei,ad892dus,sidhd823";
 
-           // String descriptografada = d.decifra(message.getText());
+            }
 
-
-
-            //messageTextView.setText(descriptografada);
-            messageTextView.setText(this.text);
+            messageTextView.setText(resposta);
         }
         authorTextView.setText(message.getName());
 

@@ -2,9 +2,7 @@ package jpsam3hklam9.des;
 
 class FeistelFunction
 {
-    /**
-     * Values for the Expansion Permutation (E) step.
-     */
+
     private static final byte[] E =
     {
         32, 1,  2,  3,  4,  5,
@@ -17,9 +15,7 @@ class FeistelFunction
         28, 29, 30, 31, 32, 1
     };
 
-    /**
-     * Values for the 8 Substitution (S) box tables.
-     */
+
     private final static byte[][][] S_BOX =
     {{
     	{ 14, 4, 13, 1, 2, 15, 11, 8, 3, 10, 6, 12, 5, 9, 0, 7 },
@@ -70,9 +66,7 @@ class FeistelFunction
 		{ 2, 1, 14, 7, 4, 10, 8, 13, 15, 12, 9, 0, 3, 5, 6, 11}
     }};
 
-    /**
-     * Values for the Permutation (P)-Box table.
-     */
+
     private final static byte[] P_BOX =
     {
         16, 7,  20, 21,
@@ -85,27 +79,12 @@ class FeistelFunction
         22, 11, 4,  25
     };
 
-	/**
-     * Given the 32 bit @param input, words by getting the index offsets specified in the E table.
-     * Masks out the bit at the given index and ORs it in the next place in the output 48 bits.
-     *
-     * @return 48 bits expanded from the 32 bit input. As Java longs are 64 bits, it will leave at
-     * least 16 zero bits in the MSB positions.
-     */
+
     private long expansionPermutation(int input)
     {
         return DES.genericPermutation(input, E, 32);
     }
 
-    /**
-     * Given the 6 bit @param input, works by masking out the 6th and 1st bits of input (which
-     * specifies the row in the S-table), and shifting them to the MSB positions while shifting the
-     * remaining 4 bits (which specify the column) to the LSB positions. Given the S-box table
-     * formats, the 6 permuted bits will specify an index between 2^0 to (2^6)-1 in the relevant
-     * S-box table (specified by @param SBoxNum).
-     *
-     * @return A byte containing the 4 bit value specified in the relevant S-box table.
-     */
     private byte SBoxSubstitution(int SBoxNum, byte input)
     {
     	byte row, col;
@@ -115,27 +94,12 @@ class FeistelFunction
         return S_BOX[SBoxNum][row][col];
     }
 
-    /**
-     * Given the 32 bit @param input, works by getting the index offsets specified in the P_BOX
-     * table, and masking out the bit at the calculated index. Once the specified bit has been
-     * masked out, OR it into the next bit position in the output 32 bits.
-     *
-     * @return 32 bits of input permuted according to the P_BOX table indices.
-     */
+
     private int PBoxPermutation(int input)
     {
         return (int) DES.genericPermutation(input, P_BOX, 32);
     }
 
-    /**
-     * The core function of DES. Does the following:
-     *      - expansion permutation step on @param input
-     *      - XORs the expanded 48 bits with the 48 bit @param roundKey
-     *      - inputs the 48 bit product into the eight S-Boxes, getting a 32 bit output
-     *      - inputs the 32 bit product into the P-Box and returns the 32 bit output
-     *
-     * @return The 32 bit output of the P-Box permutation step.
-     */
     int F(int input, long roundKey)
     {
         long output = expansionPermutation(input);

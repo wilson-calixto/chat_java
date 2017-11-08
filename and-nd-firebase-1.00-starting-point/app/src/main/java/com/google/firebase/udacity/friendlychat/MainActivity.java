@@ -40,13 +40,16 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+import java.util.UUID;
+
 import jpsam3hklam9.des.DESInterface;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
 
-    public static final String ANONYMOUS = "anonymous";
+
     public static final int DEFAULT_MSG_LENGTH_LIMIT = 1000;
 
 
@@ -58,11 +61,28 @@ public class MainActivity extends AppCompatActivity {
     private Button mSendButton;
 
     private String mUsername;
-    private String teste;
+    private String chave_atual=new String("jf92j2ei,ad892dus,sidhd823");
 
     private FirebaseDatabase mFirebaseDatabase;
+    private String user1,user2,user3;
     private DatabaseReference mMessagesDatabaseReference;
+    private DatabaseReference mMessagesDatabaseReference2;
+    public static final String ANONYMOUS = "ju";
+    private DatabaseReference mMessagesDatabaseReference3;
     private ChildEventListener mChildEventListener;
+
+    private static Random rand = new Random();
+    private static char[] letras = "ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789".toCharArray();
+
+    public String nomeAleatorio (int nCaracteres) {
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < nCaracteres; i++){
+            int ch = rand.nextInt (letras.length);
+            sb.append (letras [ch]);
+        }
+        return sb.toString();
+    }
+
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -71,8 +91,10 @@ public class MainActivity extends AppCompatActivity {
 
         mUsername = ANONYMOUS;
         mFirebaseDatabase = FirebaseDatabase.getInstance();
-
-        mMessagesDatabaseReference = mFirebaseDatabase.getReference().child("messages");
+        final String user1=new String("ju") ,user2=new String("wilson"),user3=new String("delrick");
+        mMessagesDatabaseReference = mFirebaseDatabase.getReference().child("messages/"+user1);
+        mMessagesDatabaseReference2 = mFirebaseDatabase.getReference().child("messages/"+user2);
+        mMessagesDatabaseReference3 = mFirebaseDatabase.getReference().child("messages/"+user3);
 
 
         // Initialize references to views
@@ -102,19 +124,57 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-
+                //INICIA A CHAVE COM O VALOR PADRAO
+                chave_atual="jf92j2ei,ad892dus,sidhd823";
                 DESInterface d = new DESInterface();
-                String a= d.cifrar3DES(mMessageEditText.getText().toString());
 
-                FriendlyMessage friendlyMessage = new FriendlyMessage( a, mUsername, null);
-                mMessagesDatabaseReference.push().setValue(friendlyMessage);
+                //recebe o nome dos destinatarios da mensagem e tranforma em uma lista
+                String[] arrayDeStrings3 =mMessageEditText.getText().toString().split(",");
+
+                UUID uuid = UUID.randomUUID();
+                String myRandom = uuid.toString();
+                //chave aleatoria
+                String nova_chave =nomeAleatorio(8)+","+nomeAleatorio(8)+","+nomeAleatorio(8)+",";
+
+                //nova_chave+="qe";
+                //
+
+                //CIFRA A NOVA CHAVE COM A CHAVE PADRAO
+                String nova_chave_cifrada = d.cifrar3DES(nova_chave, chave_atual);
+                FriendlyMessage friendlyMessage = new FriendlyMessage(nova_chave_cifrada, mUsername, null);
+
+                //atualiza a chave
+                chave_atual = nova_chave;
+
+                //CIFRA A MENSAGEM COM A NOVA CHAVE
+                String mensagem_cifrada = d.cifrar3DES(arrayDeStrings3[0],chave_atual);
+                FriendlyMessage friendlyMessage2 = new FriendlyMessage(mensagem_cifrada, mUsername, null);
 
 
+                //manda a nova chave cifrada pra todos que estao na lista de destinatarios
+                //manda a MENSAGEM cifrada com a NOVA CHAVE pra todos que estao na lista de destinatarios
+                for (int i=0;i<arrayDeStrings3.length;i++){
+
+                        if (arrayDeStrings3[i].equals(user1)) {
+                            mMessagesDatabaseReference.push().setValue(friendlyMessage);
+                            mMessagesDatabaseReference.push().setValue(friendlyMessage2);
+                        }
+
+                        if (arrayDeStrings3[i].equals(user2)) {
+                            mMessagesDatabaseReference2.push().setValue(friendlyMessage);
+                            mMessagesDatabaseReference2.push().setValue(friendlyMessage2);
+                        }
+
+                        if (arrayDeStrings3[i].equals(user3)) {
+                            mMessagesDatabaseReference3.push().setValue(friendlyMessage);
+                            mMessagesDatabaseReference3.push().setValue(friendlyMessage2);
+                        }
+                }
 
 
-
-                // Limpar a input box
                 mMessageEditText.setText("");
+
+
             }
         });
 

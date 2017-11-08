@@ -7,13 +7,12 @@ import java.util.*;
 
 public class DESInterface {
     //oque eu devo implementar é:
-    public static String main(String s) {
-        //cnxxbkvj
-        //cnxxbkvj
-        //cnxxbkvj
-        return "";
-    }
-    private static String cifra3DES(long[] blocks, long key1, long key2, long key3, int a) {
+
+
+    private static String cifra3DES(long[] blocks, long key, long key2, long key3, int a) {
+
+        long key1 = getKey("12345678");
+
         String acm_str = new String("");
         DES des = new DES();
         long[] cipherTexts = new long[blocks.length], plainTexts = new long[blocks.length];
@@ -25,8 +24,9 @@ public class DESInterface {
 
         return acm_str;
     }
-    private static String decifra3DES(long[] original, long key1, long key2, long key3, int a) {
+    private static String decifra3DES(long[] original, long key, long key2, long key3, int a) {
         ArrayList<String> mensagem = new ArrayList<String>();
+        long key1 = getKey("12345678");
 
         String acm_str = new String("");
         DES des = new DES();
@@ -46,7 +46,13 @@ public class DESInterface {
             acm_str +=pedaco;
         }
         //acm_str=acm_str.replaceAll("\\W+|\\S+","");
+        acm_str=acm_str.replaceAll(" ","XW");
+
+
         acm_str=acm_str.replaceAll("[^a-zA-Z0-9]","");
+
+        acm_str=acm_str.replaceAll("XW+"," ");
+
         acm_str=acm_str.replaceAll("[J]+","");
 
         return acm_str;
@@ -84,27 +90,34 @@ public class DESInterface {
 
     }
 
+    public static String cifrar3DES(String s,String chave) {
+        String[] arrayDeStrings = chave.split(",");
 
-
-    public static String cifrar3DES(String s) {
 
         byte[] text = s.getBytes();
-        long key1 = getKey("12345678");
-        long key2 = getKey("87654321");
-        long key3 = getKey("91827364");
+        long key1 = getKey(arrayDeStrings [0]);
+        long key2 = getKey(arrayDeStrings [1]);
+        long key3 = getKey(arrayDeStrings [2]);
+
         long[] blocks = splitInputIntoBlocks(text);
 
-
-        return cifra3DES(blocks, key1,key2, key3,1);// RETORNA a string cifrada;
+        return cifra3DES(blocks, key1,key2,key3,1);// RETORNA a string cifrada;
     }
 
 
-    public static String decifrar3DES(String s) {
+    public static String decifrar3DES(String s,String chave) {
+        //chave padrão
+        String[] arrayDeStrings1 = "jf92j2ei,ad892dus,sidhd823".split(",");
+
+        arrayDeStrings1 = chave.split(",");
+
 
         byte[] text = s.getBytes();
-        long key1 = getKey("12345678");
-        long key2 = getKey("87654321");
-        long key3 = getKey("91827364");
+        long key1 = getKey(arrayDeStrings1 [0]);
+        long key2 = getKey(arrayDeStrings1 [1]);
+        long key3 = getKey(arrayDeStrings1 [2]);
+
+
         long[] blocks = splitInputIntoBlocks(text);
 
         String[] arrayDeStrings = s.split(",");
@@ -158,14 +171,8 @@ public class DESInterface {
             acm_str +=pedaco;
         }
 
-        acm_str=acm_str.replaceAll("[^a-zA-Z0-9s]+","");
-        acm_str=acm_str.replaceAll("[J]+","");
-
         return acm_str;
     }
-
-
-
 
 
     private static String cifra3DES(long[] blocks, long key1, long key2, long key3,Integer a) {
@@ -234,8 +241,6 @@ public class DESInterface {
             acm_str +=pedaco;
         }
 
-//        acm_str=acm_str.replaceAll("[^a-zA-Z0-9]+","");
-  //      acm_str=acm_str.replaceAll("[J]+","");
 
         return acm_str;
 
@@ -316,3 +321,7 @@ public class DESInterface {
 
 
 }
+
+
+//        acm_str=acm_str.replaceAll("[^a-zA-Z0-9]+","");
+//      acm_str=acm_str.replaceAll("[J]+","");
